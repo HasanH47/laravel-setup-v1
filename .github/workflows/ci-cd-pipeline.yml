@@ -111,29 +111,29 @@ jobs:
   #           sudo service php8.1-fpm reload
   #         EOF
   deploy:
-  name: Mock Deployment
-  runs-on: ubuntu-latest
-  needs: ci
-  if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    name: Mock Deployment
+    runs-on: ubuntu-latest
+    needs: ci
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: 8.1
-        extensions: mbstring, exif, pcntl, bcmath, gd, intl, pdo_mysql
-        ini-values: post_max_size=256M, upload_max_filesize=256M, memory_limit=2G
-        coverage: none
-        tools: composer, node
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          extensions: mbstring, exif, pcntl, bcmath, gd, intl, pdo_mysql
+          ini-values: post_max_size=256M, upload_max_filesize=256M, memory_limit=2G
+          coverage: none
+          tools: composer, node
 
-    - name: Mock Install Composer dependencies
-      run: echo "Pretend to install Composer dependencies"
+      - name: Mock Install Composer dependencies
+        run: echo "Pretend to install Composer dependencies"
 
-    - name: Mock Sync files to server
-      run: echo "Pretend to sync files to server"
+      - name: Mock Sync files to server
+        run: echo "Pretend to sync files to server"
 
-    - name: Mock SSH into Server and Deploy
-      run: echo "Pretend to SSH into server and run deployment commands"
+      - name: Mock SSH into Server and Deploy
+        run: echo "Pretend to SSH into server and run deployment commands"
