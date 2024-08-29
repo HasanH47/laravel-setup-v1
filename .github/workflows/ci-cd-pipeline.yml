@@ -30,38 +30,49 @@ jobs:
         ports:
           - 3306:3306
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.2
-          extensions: mbstring, exif, pcntl, bcmath, gd, intl, pdo_mysql
-          ini-values: post_max_size=256M, upload_max_filesize=256M, memory_limit=2G
-          coverage: none
-          tools: composer, node
+        - name: Setup PHP
+          uses: shivammathur/setup-php@v2
+          with:
+            php-version: 8.2
+            extensions: mbstring, exif, pcntl, bcmath, gd, intl, pdo_mysql
+            ini-values: post_max_size=256M, upload_max_filesize=256M, memory_limit=2G
+            coverage: none
+            tools: composer, node
 
-      - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest --no-interaction
+        - name: Create .env file
+          run: |
+            cp .env.example .env
+            php artisan key:generate
 
-      - name: Generate application key
-        run: php artisan key:generate
+        - name: Configure .env
+          run: |
+            echo "DB_CONNECTION=mysql" >> .env
+            echo "DB_HOST=127.0.0.1" >> .env
+            echo "DB_PORT=3306" >> .env
+            echo "DB_DATABASE=laravel" >> .env
+            echo "DB_USERNAME=user" >> .env
+            echo "DB_PASSWORD=password" >> .env
 
-      - name: Cache configuration
-        run: php artisan config:cache
+        - name: Install Composer dependencies
+          run: composer install --prefer-dist --no-progress --no-suggest --no-interaction
 
-      - name: Run migrations
-        run: php artisan migrate --force
+        - name: Cache configuration
+          run: php artisan config:cache
 
-      - name: Run tests
-        env:
-          DB_CONNECTION: mysql
-          DB_DATABASE: laravel
-          DB_USERNAME: user
-          DB_PASSWORD: password
-        run: php artisan test --parallel --stop-on-failure
+        - name: Run migrations
+          run: php artisan migrate --force
+
+        - name: Run tests
+          env:
+            DB_CONNECTION: mysql
+            DB_DATABASE: laravel
+            DB_USERNAME: user
+            DB_PASSWORD: password
+          run: php artisan test --parallel --stop-on-failure
 
   # Job untuk CD
   # deploy:
