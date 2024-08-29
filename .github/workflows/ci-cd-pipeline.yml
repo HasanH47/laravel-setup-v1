@@ -30,49 +30,49 @@ jobs:
         ports:
           - 3306:3306
 
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-        - name: Setup PHP
-          uses: shivammathur/setup-php@v2
-          with:
-            php-version: 8.2
-            extensions: mbstring, exif, pcntl, bcmath, gd, intl, pdo_mysql
-            ini-values: post_max_size=256M, upload_max_filesize=256M, memory_limit=2G
-            coverage: none
-            tools: composer, node
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          extensions: mbstring, exif, pcntl, bcmath, gd, intl, pdo_mysql
+          ini-values: post_max_size=256M, upload_max_filesize=256M, memory_limit=2G
+          coverage: none
+          tools: composer, node
 
-        - name: Create .env file
-          run: |
-            cp .env.example .env
-            php artisan key:generate
+      - name: Create .env file
+        run: |
+          cp .env.example .env
+          php artisan key:generate
 
-        - name: Configure .env
-          run: |
-            echo "DB_CONNECTION=mysql" >> .env
-            echo "DB_HOST=127.0.0.1" >> .env
-            echo "DB_PORT=3306" >> .env
-            echo "DB_DATABASE=laravel" >> .env
-            echo "DB_USERNAME=user" >> .env
-            echo "DB_PASSWORD=password" >> .env
+      - name: Configure .env
+        run: |
+          echo "DB_CONNECTION=mysql" >> .env
+          echo "DB_HOST=127.0.0.1" >> .env
+          echo "DB_PORT=3306" >> .env
+          echo "DB_DATABASE=laravel" >> .env
+          echo "DB_USERNAME=user" >> .env
+          echo "DB_PASSWORD=password" >> .env
 
-        - name: Install Composer dependencies
-          run: composer install --prefer-dist --no-progress --no-suggest --no-interaction
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest --no-interaction
 
-        - name: Cache configuration
-          run: php artisan config:cache
+      - name: Cache configuration
+        run: php artisan config:cache
 
-        - name: Run migrations
-          run: php artisan migrate --force
+      - name: Run migrations
+        run: php artisan migrate --force
 
-        - name: Run tests
-          env:
-            DB_CONNECTION: mysql
-            DB_DATABASE: laravel
-            DB_USERNAME: user
-            DB_PASSWORD: password
-          run: php artisan test --parallel --stop-on-failure
+      - name: Run tests
+        env:
+          DB_CONNECTION: mysql
+          DB_DATABASE: laravel
+          DB_USERNAME: user
+          DB_PASSWORD: password
+        run: php artisan test --parallel --stop-on-failure
 
   # Job untuk CD
   # deploy:
@@ -88,14 +88,11 @@ jobs:
   #     - name: Setup PHP
   #       uses: shivammathur/setup-php@v2
   #       with:
-  #         php-version: 8.2
+  #         php-version: 8.1
   #         extensions: mbstring, exif, pcntl, bcmath, gd, intl, pdo_mysql
   #         ini-values: post_max_size=256M, upload_max_filesize=256M, memory_limit=2G
   #         coverage: none
   #         tools: composer, node
-
-  #     - name: Install Composer dependencies
-  #       run: composer install --prefer-dist --no-progress --no-suggest --no-interaction --optimize-autoloader --no-dev
 
   #     - name: Sync files to server
   #       env:
@@ -104,6 +101,14 @@ jobs:
   #         DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
   #       run: |
   #         rsync -avz --delete --exclude='.env' --exclude='storage/' --exclude='.git/' --exclude='vendor/' ./ $DEPLOY_USER@$DEPLOY_SERVER:$DEPLOY_PATH
+
+  #     - name: Transfer .env to server
+  #       env:
+  #         DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
+  #         DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+  #         DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+  #       run: |
+  #         scp .env $DEPLOY_USER@$DEPLOY_SERVER:$DEPLOY_PATH/.env
 
   #     - name: SSH into Server and Deploy
   #       env:
@@ -121,6 +126,7 @@ jobs:
   #           php artisan storage:link
   #           sudo service php8.1-fpm reload
   #         EOF
+
   deploy:
     name: Mock Deployment
     runs-on: ubuntu-latest
