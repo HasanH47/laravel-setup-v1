@@ -33,15 +33,15 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: "8.2"
           tools: composer, phpunit
           coverage: xdebug
 
-      - name: Install Dependencies
-        run: |
-          composer install --prefer-dist --no-interaction --no-progress --optimize-autoloader
-          npm install
-          npm run build
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Generate application key
+        run: php artisan key:generate
 
   # Job untuk Static Code Analysis
   code_analysis:
@@ -95,4 +95,3 @@ jobs:
         run: |
           # Add your deployment script here
           echo "Deploying application..."
-
