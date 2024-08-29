@@ -60,9 +60,6 @@ jobs:
           echo "DB_USERNAME=user" >> .env
           echo "DB_PASSWORD=password" >> .env
 
-      - name: Cache configuration
-        run: php artisan config:cache
-
       - name: Run migrations
         run: php artisan migrate --force
 
