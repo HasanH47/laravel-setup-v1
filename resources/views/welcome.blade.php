@@ -3,13 +3,13 @@
 @section('title', 'Welcome')
 
 @section('content')
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">Welcome</div>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header"><strong>Welcome</strong></div>
+                <div class="card-body">
                     <div class="alert alert-success">
-                        Welcome!
+                        Welcome Guest
                     </div>
                 </div>
             </div>
