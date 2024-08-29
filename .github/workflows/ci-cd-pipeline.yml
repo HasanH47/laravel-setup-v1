@@ -72,7 +72,7 @@ jobs:
           DB_DATABASE: laravel
           DB_USERNAME: user
           DB_PASSWORD: password
-        run: php artisan test --parallel --stop-on-failure
+        run: php artisan test --stop-on-failure
 
   # Job untuk CD
   # deploy:
